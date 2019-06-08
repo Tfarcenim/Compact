@@ -1,0 +1,16 @@
+{
+  "type": "crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "compressed:gravel_x21"
+    }
+  },
+  "result": {
+    "item": "compressed:gravel_x22"
+  }
+}

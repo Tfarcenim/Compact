@@ -1,0 +1,12 @@
+{
+  "type": "crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "compressed:gravel_x20"
+    }
+  ],
+  "result": {
+    "item": "compressed:gravel_x19",
+    "count": 9
+  }
+}

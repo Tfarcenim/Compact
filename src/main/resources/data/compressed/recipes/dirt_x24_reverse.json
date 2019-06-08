@@ -1,0 +1,12 @@
+{
+  "type": "crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "compressed:dirt_x24"
+    }
+  ],
+  "result": {
+    "item": "compressed:dirt_x23",
+    "count": 9
+  }
+}

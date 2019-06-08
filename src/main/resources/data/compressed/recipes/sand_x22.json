@@ -1,0 +1,16 @@
+{
+  "type": "crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "compressed:sand_x21"
+    }
+  },
+  "result": {
+    "item": "compressed:sand_x22"
+  }
+}
