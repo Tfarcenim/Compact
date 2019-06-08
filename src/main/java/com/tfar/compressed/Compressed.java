@@ -3,8 +3,8 @@ package com.tfar.compressed;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -22,7 +22,7 @@ public class Compressed {
   // Directly reference a log4j logger.
   private static final Logger LOGGER = LogManager.getLogger();
 
-  public static final String MODID = "compressed";
+  public static final String MODID = "compact";
 
   public static final List<BlockCompressed> MOD_BLOCKS = new ArrayList<>();
 
@@ -66,7 +66,7 @@ public class Compressed {
     Item.Properties properties1 = new Item.Properties().group(ItemGroup.MISC);
 
     for (Block block : MOD_BLOCKS) {
-      registerItem(new ItemBlock(block, properties1), block.getRegistryName().toString(), registry);
+      registerItem(new BlockItem(block, properties1), block.getRegistryName().toString(), registry);
     }
   }
 
