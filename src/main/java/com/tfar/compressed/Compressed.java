@@ -30,7 +30,7 @@ public class Compressed {
 
   static {
     try {
-      if (false)
+      if (true)
         Scripts.jsonStuff();
     } catch (Throwable t) {
       t.printStackTrace();
