@@ -22,11 +22,10 @@ public class Scripts {
   public static void jsonStuff() throws IOException {
 
     for (BlockCompressed block : Compressed.MOD_BLOCKS) {
-      blockstates(block.compression_level, block.material_name);
-      block(block.compression_level, block.material_name);
-      item(block.compression_level, block.material_name);
-      recipe(block.compression_level, block.material_name);
-      reverse(block.compression_level, block.material_name);
+      blockstates(block.compression_level, block.material_name.getPath());
+      block(block.compression_level, block.material_name.getPath());
+      item(block.compression_level, block.material_name.getPath());
+      reverse(block.compression_level, block.material_name.getPath());
     }
     lang();
   }
@@ -122,7 +121,7 @@ public class Scripts {
   private static void lang() throws IOException {
     JsonObject lang = new JsonObject();
     for (BlockCompressed block : Compressed.MOD_BLOCKS){
-      lang.addProperty("block.compressed."+block.material_name+"_x"+block.compression_level, block.compression_level+"x"+" Compressed "+ block.material_name.substring(0,1).toUpperCase()+block.material_name.substring(1));
+      lang.addProperty("block.compressed."+block.material_name+"_x"+block.compression_level, block.compression_level+"x"+" Compressed "+ block.material_name.getPath().substring(0,1).toUpperCase()+block.material_name.getPath().substring(1));
     }
     File langfile = new File("C:\\Users\\xluser\\Documents\\MinecraftMods\\mods\\Compressed\\1.13\\src\\main\\resources\\assets\\compressed\\lang\\en_us.json");
     FileWriter writer = new FileWriter(langfile);

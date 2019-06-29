@@ -1,0 +1,10 @@
+{
+  "compressible": [
+    "minecraft:cobblestone",
+    "minecraft:dirt",
+    "minecraft:netherrack",
+    "minecraft:sand",
+    "minecraft:gravel"
+  ],
+  "max": 32
+}

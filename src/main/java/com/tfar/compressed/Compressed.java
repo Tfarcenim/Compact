@@ -6,56 +6,71 @@ import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.ObjectHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 @Mod(value = Compressed.MODID)
 public class Compressed {
   // Directly reference a log4j logger.
-  private static final Logger LOGGER = LogManager.getLogger();
+  public static final Logger LOGGER = LogManager.getLogger();
 
-  public static final String MODID = "compact";
-
+  public static final String MODID = "compressed";
   public static final List<BlockCompressed> MOD_BLOCKS = new ArrayList<>();
+  public static final List<ResourceLocation> registrynames = new ArrayList<>();
+  public static final Set<Block> compressible = new HashSet<>();
 
-  public static final List<String> registrynames = new ArrayList<>();
 
   static {
     try {
-      if (true)
+      if (false)
         Scripts.jsonStuff();
     } catch (Throwable t) {
       t.printStackTrace();
     }
   }
 
-  static {
-    registrynames.add("cobblestone");
-    registrynames.add("dirt");
-    registrynames.add("netherrack");
-    registrynames.add("sand");
-    registrynames.add("gravel");
+  @SubscribeEvent
+  public static void registerSerials(RegistryEvent.Register<IRecipeSerializer<?>> event) {
+
+    IForgeRegistry<IRecipeSerializer<?>> registry = event.getRegistry();
+    SpecialRecipeSerializer<CompressionRecipe> obj = new SpecialRecipeSerializer<>(CompressionRecipe::new);
+    obj.setRegistryName("compression");
+    registry.register(obj);
   }
 
   @SubscribeEvent
   public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
 
+    Configs.handleConfig();
+
+    for (ResourceLocation registryname : registrynames) {
+      Block block = ForgeRegistries.BLOCKS.getValue(registryname);
+      compressible.add(block);
+    }
+
     IForgeRegistry<Block> registry = blockRegistryEvent.getRegistry();
 
     Block.Properties properties = Block.Properties.create(Material.ROCK, MaterialColor.DIRT).hardnessAndResistance(1.5F, 6.0F);
 
-    for (String material : registrynames)
-    for (int i = 1; i < 33; i++)
-      registerBlock(new BlockCompressed(properties, i, material), material+"_x" + i, registry);
-
+    for (ResourceLocation material : registrynames)
+    for (int i = 1; i < Configs.max + 1; i++)
+      registerBlock(new BlockCompressed(properties, i, material), material.getPath()+"_x" + i, registry);
   }
 
   @SubscribeEvent
@@ -80,6 +95,10 @@ public class Compressed {
     item.setRegistryName(name);
     registry.register(item);
   }
+
+  @ObjectHolder(MODID + ":compression")
+  public static final IRecipeSerializer<?> RECIPE = null;
+
 }
 
 
