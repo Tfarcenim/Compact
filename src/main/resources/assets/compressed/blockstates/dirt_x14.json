@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "compressed:block/dirt_x14"
+      "model": "compressed:block/cube_all_dirt"
     }
   }
 }

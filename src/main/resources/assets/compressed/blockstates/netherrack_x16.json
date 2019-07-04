@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "compressed:block/netherrack_x16"
+      "model": "compressed:block/cube_all_netherrack"
     }
   }
 }

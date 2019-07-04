@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "compressed:block/sand_x25"
+      "model": "compressed:block/cube_all_sand"
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "compressed:block/cube_all_tinted",
   "textures": {
-    "all": "block/dirt"
+    "all": "block/gravel"
   }
 }

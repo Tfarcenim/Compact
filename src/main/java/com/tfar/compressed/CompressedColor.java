@@ -18,8 +18,8 @@ public class CompressedColor {
   @SuppressWarnings("unused")
   public static void registerBlockColors(ColorHandlerEvent.Block event) {
     BlockColors colors = event.getBlockColors();
-    final IBlockColor compressedColor = (state, blockAccess, pos, tintIndex) -> Math.max(0,0xffffff - 0x080808 * ((BlockCompressed) state.getBlock()).compression_level + (tintIndex == 0 ?  0 : 4));
-    for (BlockCompressed block : Compressed.MOD_BLOCKS)
+    final IBlockColor compressedColor = (state, blockAccess, pos, tintIndex) -> Math.max(0,0xffffff - 0x080808 * ((CompressedBlock) state.getBlock()).compression_level + (tintIndex == 0 ?  0 : 4));
+    for (CompressedBlock block : Compressed.MOD_BLOCKS)
       colors.register(compressedColor, block);
   }
 
@@ -34,7 +34,7 @@ public class CompressedColor {
       final BlockState state = ((BlockItem) stack.getItem()).getBlock().getDefaultState();
       return blockColors.getColor(state, null, null,tintIndex);
     };
-    for (BlockCompressed block : Compressed.MOD_BLOCKS)
+    for (CompressedBlock block : Compressed.MOD_BLOCKS)
       itemColors.register(itemBlockColor, block);
   }
 }

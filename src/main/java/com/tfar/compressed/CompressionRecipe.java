@@ -35,7 +35,7 @@ public class CompressionRecipe extends SpecialRecipe {
       || !(cachedStack.getItem() instanceof BlockItem)
             || (!Compressed.compressible.contains(Block.getBlockFromItem(cachedStack.getItem()))
 
-    && !(Block.getBlockFromItem(cachedStack.getItem()) instanceof BlockCompressed)
+    && !(Block.getBlockFromItem(cachedStack.getItem()) instanceof CompressedBlock)
 
     )) isCompression = false;
     else {
@@ -47,7 +47,7 @@ public class CompressionRecipe extends SpecialRecipe {
       }
     }
     if (isCompression)
-      return !(Block.getBlockFromItem(cachedStack.getItem()) instanceof BlockCompressed) || ((BlockCompressed)
+      return !(Block.getBlockFromItem(cachedStack.getItem()) instanceof CompressedBlock) || ((CompressedBlock)
               Block.getBlockFromItem(cachedStack.getItem())).compression_level < Configs.max;
     //then search for decompression recipes
     List<ItemStack> notEmpty = new ArrayList<>();
@@ -55,7 +55,7 @@ public class CompressionRecipe extends SpecialRecipe {
     for (int j = 0; j < inv.getSizeInventory(); ++j) {
       ItemStack stack = inv.getStackInSlot(j);
       if (!stack.isEmpty() && (!(stack.getItem() instanceof BlockItem)
-              || !(((BlockItem) stack.getItem()).getBlock() instanceof BlockCompressed))) {
+              || !(((BlockItem) stack.getItem()).getBlock() instanceof CompressedBlock))) {
         return false;
       }
       if (!stack.isEmpty())
@@ -78,7 +78,7 @@ public class CompressionRecipe extends SpecialRecipe {
     if (cachedStack.isEmpty()
             || !(cachedStack.getItem() instanceof BlockItem)
             || (!Compressed.compressible.contains(Block.getBlockFromItem(cachedStack.getItem()))
-    && !(Block.getBlockFromItem(cachedStack.getItem()) instanceof BlockCompressed))) isCompression = false;
+    && !(Block.getBlockFromItem(cachedStack.getItem()) instanceof CompressedBlock))) isCompression = false;
     else {
       for (int j = 0; j < inv.getSizeInventory(); ++j) {
         if (cachedStack.getItem() != inv.getStackInSlot(j).getItem()) {
@@ -90,10 +90,10 @@ public class CompressionRecipe extends SpecialRecipe {
     Block block = Block.getBlockFromItem(cachedStack.getItem());
 
     if (isCompression){
-      if (block instanceof BlockCompressed){
-        String material = ((BlockCompressed) block).material_name.getPath();
+      if (block instanceof CompressedBlock){
+        String material = ((CompressedBlock) block).material_name.getPath();
 
-        int compression = ((BlockCompressed) block).compression_level;
+        int compression = ((CompressedBlock) block).compression_level;
         return new ItemStack(ForgeRegistries.BLOCKS.getValue(
                 new ResourceLocation(Compressed.MODID,material + "_x" + (compression+1))));
       }
@@ -109,7 +109,7 @@ public class CompressionRecipe extends SpecialRecipe {
     for (int j = 0; j < inv.getSizeInventory(); ++j) {
       ItemStack stack = inv.getStackInSlot(j);
       if (!stack.isEmpty() && (!(stack.getItem() instanceof BlockItem)
-              || !(((BlockItem) stack.getItem()).getBlock() instanceof BlockCompressed))) {
+              || !(((BlockItem) stack.getItem()).getBlock() instanceof CompressedBlock))) {
         return ItemStack.EMPTY;
       }
       if(!stack.isEmpty())
@@ -118,11 +118,11 @@ public class CompressionRecipe extends SpecialRecipe {
 
     if(notEmpty.size() != 1)return ItemStack.EMPTY;
     block = Block.getBlockFromItem(notEmpty.get(0).getItem());
-    int compression = ((BlockCompressed)block).compression_level;
-    if (compression == 1)return new ItemStack(ForgeRegistries.BLOCKS.getValue(((BlockCompressed) block).material_name),9);
+    int compression = ((CompressedBlock)block).compression_level;
+    if (compression == 1)return new ItemStack(ForgeRegistries.BLOCKS.getValue(((CompressedBlock) block).material_name),9);
     return new ItemStack(ForgeRegistries.BLOCKS.getValue(
             new ResourceLocation(Compressed.MODID,
-                    ((BlockCompressed) block).material_name.getPath() + "_x" + (compression-1))),9);
+                    ((CompressedBlock) block).material_name.getPath() + "_x" + (compression-1))),9);
   }
 
 

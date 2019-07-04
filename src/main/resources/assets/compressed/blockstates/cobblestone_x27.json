@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "compressed:block/cobblestone_x27"
+      "model": "compressed:block/cube_all_cobblestone"
     }
   }
 }
