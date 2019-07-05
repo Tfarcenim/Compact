@@ -3,16 +3,16 @@ package com.tfar.compressed;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.item.ItemEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
@@ -31,6 +31,10 @@ import java.util.Set;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 @Mod(value = Compressed.MODID)
 public class Compressed {
+
+  public Compressed(){
+    ResourcePack.makeResourcePack();
+  }
   // Directly reference a log4j logger.
   public static final Logger LOGGER = LogManager.getLogger();
 
@@ -42,13 +46,11 @@ public class Compressed {
 @Mod.EventBusSubscriber
 public static class yeet {
   @SubscribeEvent
-  public static void server(FMLServerStartingEvent e) {
-    if (false)
-      try {
-        Scripts.jsonStuff();
-      } catch (Throwable t) {
-        t.printStackTrace();
-      }
+  public static void pack(PlayerInteractEvent.RightClickItem e) {
+
+   // if (!(e.getItemStack().getItem() == Items.STICK))return;
+   //     ResourcePack.makeResourcePack();
+   //     e.getEntityPlayer().sendMessage(new StringTextComponent("loaded"));
   }
 }
   @SubscribeEvent
