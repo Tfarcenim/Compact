@@ -1,0 +1,13 @@
+{
+  "type": "compressed:decompression",
+  "group": "compression",
+  "ingredients": [
+    {
+      "item": "compressed:cobblestone_x1"
+    }
+  ],
+  "result": {
+    "item": "minecraft:cobblestone",
+    "count": 9
+  }
+}

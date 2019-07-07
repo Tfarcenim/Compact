@@ -1,3 +1,4 @@
 {
-  "block.compressed": "%sx Compressed "
+  "block.compressed": "%sx Compressed ",
+  "itemGroup.compressed": "Compressed Blocks"
 }

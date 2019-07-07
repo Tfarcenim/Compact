@@ -1,6 +1,6 @@
 {
   "type": "compressed:compression",
-  "group": "simpleblock",
+  "group": "compression",
   "ingredients": [
     {
       "item": "minecraft:cobblestone"

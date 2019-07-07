@@ -1,67 +1,40 @@
 package com.tfar.compressed;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
+import net.minecraft.item.crafting.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CompressionRecipe extends SpecialRecipe {
-  public CompressionRecipe(ResourceLocation idIn) {
-    super(idIn);
+
+  public CompressionRecipe(ResourceLocation id) {
+    super(id);
   }
 
-  /**
-   * Used to check if a recipe matches current crafting inventory
-   *
-   * @param inv
-   * @param worldIn
-   */
   @Override
   public boolean matches(CraftingInventory inv, World worldIn) {
-    //first, search for compression recipes
-    boolean isCompression = true;
+    //search for compression recipes
     final ItemStack cachedStack = inv.getStackInSlot(0);
-    if (inv.getSizeInventory() != 9
-    ||cachedStack.isEmpty()
-      || !(cachedStack.getItem() instanceof BlockItem)
-            || (!Compressed.compressible.contains(Block.getBlockFromItem(cachedStack.getItem()))
+    if (inv.getSizeInventory() != 9 || (!Compressed.compressible.contains(Block.getBlockFromItem(cachedStack.getItem()))
 
-    && !(Block.getBlockFromItem(cachedStack.getItem()) instanceof CompressedBlock)
-
-    )) isCompression = false;
+            && !(Block.getBlockFromItem(cachedStack.getItem()) instanceof CompressedBlock))
+    ) return false;
     else {
       for (int j = 0; j < inv.getSizeInventory(); ++j) {
+        // if the item doesn't match the original it's not a compression recipe
         if (cachedStack.getItem() != inv.getStackInSlot(j).getItem()) {
-          isCompression = false;
-          break;
+          return false;
         }
       }
     }
-    if (isCompression)
-      return !(Block.getBlockFromItem(cachedStack.getItem()) instanceof CompressedBlock) || ((CompressedBlock)
-              Block.getBlockFromItem(cachedStack.getItem())).compression_level < Configs.max;
-    //then search for decompression recipes
-    List<ItemStack> notEmpty = new ArrayList<>();
-
-    for (int j = 0; j < inv.getSizeInventory(); ++j) {
-      ItemStack stack = inv.getStackInSlot(j);
-      if (!stack.isEmpty() && (!(stack.getItem() instanceof BlockItem)
-              || !(((BlockItem) stack.getItem()).getBlock() instanceof CompressedBlock))) {
-        return false;
-      }
-      if (!stack.isEmpty())
-      notEmpty.add(stack);
-    }
-    return notEmpty.size() == 1;
+    return Compressed.compressible.contains(Block.getBlockFromItem(cachedStack.getItem()))
+            || ((CompressedBlock) Block.getBlockFromItem(cachedStack.getItem())).compression != Blocks.AIR;
   }
 
   /**
@@ -72,64 +45,29 @@ public class CompressionRecipe extends SpecialRecipe {
   @Nonnull
   @Override
   public ItemStack getCraftingResult(CraftingInventory inv) {
-    //first, search for compression recipes
-    boolean isCompression = true;
-    final ItemStack cachedStack = inv.getStackInSlot(0);
-    if (cachedStack.isEmpty()
-            || !(cachedStack.getItem() instanceof BlockItem)
-            || (!Compressed.compressible.contains(Block.getBlockFromItem(cachedStack.getItem()))
-    && !(Block.getBlockFromItem(cachedStack.getItem()) instanceof CompressedBlock))) isCompression = false;
-    else {
-      for (int j = 0; j < inv.getSizeInventory(); ++j) {
-        if (cachedStack.getItem() != inv.getStackInSlot(j).getItem()) {
-          isCompression = false;
-          break;
-        }
-      }
+    //don't bother searching we already have it
+    final ItemStack toCompress = inv.getStackInSlot(0);
+    Block block = Block.getBlockFromItem(toCompress.getItem());
+    if (block instanceof CompressedBlock) {
+      return new ItemStack(((CompressedBlock) block).compression);
+    } else {
+      // there is no easy way to retrieve compression levels from blocks we don't have access to
+      String path = block.getRegistryName().getPath();
+      String domain = block.getRegistryName().getNamespace().equals("minecraft") ? "" : block.getRegistryName().getNamespace() + ".";
+      return new ItemStack(ForgeRegistries.BLOCKS.getValue(
+              new ResourceLocation(Compressed.MODID,domain + path + "_x" + 1)));
     }
-    Block block = Block.getBlockFromItem(cachedStack.getItem());
-
-    if (isCompression){
-      if (block instanceof CompressedBlock){
-        String material = ((CompressedBlock) block).material_name.getPath();
-
-        int compression = ((CompressedBlock) block).compression_level;
-        return new ItemStack(ForgeRegistries.BLOCKS.getValue(
-                new ResourceLocation(Compressed.MODID,material + "_x" + (compression+1))));
-      }
-      else {
-        String path =  block.getRegistryName().getPath();
-        return new ItemStack(ForgeRegistries.BLOCKS.getValue(
-                new ResourceLocation(Compressed.MODID,path + "_x" + 1)));
-      }
-    }
-    //then search for decompression recipes
-    List<ItemStack> notEmpty = new ArrayList<>();
-
-    for (int j = 0; j < inv.getSizeInventory(); ++j) {
-      ItemStack stack = inv.getStackInSlot(j);
-      if (!stack.isEmpty() && (!(stack.getItem() instanceof BlockItem)
-              || !(((BlockItem) stack.getItem()).getBlock() instanceof CompressedBlock))) {
-        return ItemStack.EMPTY;
-      }
-      if(!stack.isEmpty())
-      notEmpty.add(stack);
-    }
-
-    if(notEmpty.size() != 1)return ItemStack.EMPTY;
-    block = Block.getBlockFromItem(notEmpty.get(0).getItem());
-    int compression = ((CompressedBlock)block).compression_level;
-    if (compression == 1)return new ItemStack(ForgeRegistries.BLOCKS.getValue(((CompressedBlock) block).material_name),9);
-    return new ItemStack(ForgeRegistries.BLOCKS.getValue(
-            new ResourceLocation(Compressed.MODID,
-                    ((CompressedBlock) block).material_name.getPath() + "_x" + (compression-1))),9);
   }
-
 
   @Nonnull
   @Override
   public IRecipeSerializer<?> getSerializer() {
-    return Compressed.RECIPE;
+    return Compressed.compression;
+  }
+
+  @Override
+  public boolean canFit(int width, int height) {
+    return width >= 3 && height >= 3;
   }
 }
 
