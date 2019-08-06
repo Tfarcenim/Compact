@@ -2,25 +2,30 @@
   "compressible": [
     {
       "registry_name": "minecraft:cobblestone",
-      "texture": "block/cobblestone"
+      "texture": "block/cobblestone",
+      "max_compression" : 32
     },
     {
       "registry_name": "minecraft:dirt",
-      "texture": "block/dirt"
+      "texture": "block/dirt",
+      "max_compression" : 32
+
     },
     {
       "registry_name": "minecraft:netherrack",
-      "texture": "block/netherrack"
+      "texture": "block/netherrack",
+      "max_compression" : 32
     },
     {
       "registry_name": "minecraft:sand",
-      "texture": "block/sand"
+      "texture": "block/sand",
+      "max_compression" : 32
     },
     {
       "registry_name": "minecraft:gravel",
-      "texture": "block/gravel"
+      "texture": "block/gravel",
+      "max_compression" : 32
     }
   ],
-  "max": 32,
   "loaded_blocks": -1
 }

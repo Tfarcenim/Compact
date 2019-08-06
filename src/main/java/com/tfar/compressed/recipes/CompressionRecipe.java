@@ -1,5 +1,7 @@
-package com.tfar.compressed;
+package com.tfar.compressed.recipes;
 
+import com.tfar.compressed.Compressed;
+import com.tfar.compressed.CompressedBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.inventory.CraftingInventory;
@@ -19,6 +21,7 @@ public class CompressionRecipe extends SpecialRecipe {
 
   @Override
   public boolean matches(CraftingInventory inv, World worldIn) {
+
     //search for compression recipes
     final ItemStack cachedStack = inv.getStackInSlot(0);
     if (inv.getSizeInventory() != 9 || (!Compressed.compressible.contains(Block.getBlockFromItem(cachedStack.getItem()))

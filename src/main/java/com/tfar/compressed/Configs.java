@@ -1,25 +1,27 @@
 package com.tfar.compressed;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Configs {
 
   public static Gson g = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
   public static int config_loaded_blocks;
 
-  public static final List<CompressionEntry> COMPRESSION_ENTRIES = new ArrayList<>();
+  public static final Set<CompressionEntry> COMPRESSION_ENTRIES = new HashSet<>();
 
-  public static File configFile = new File("config/compressed.json");
-  private static BufferedInputStream in = new BufferedInputStream(Configs.class.getResourceAsStream("/default.json"));
+  public static final File configFile = new File("config/compressed.json");
+  private static BufferedInputStream in = new BufferedInputStream(Configs.class.getResourceAsStream("/compressed.json"));
 
-  public static int max;
   public static String s;
 
   static {
@@ -31,10 +33,8 @@ public class Configs {
   }
 
   public static void handleConfig() {
-
     writeConfig();
     readConfig();
-
   }
 
   private static void writeConfig() {
@@ -55,13 +55,10 @@ public class Configs {
     try {
       FileReader reader = new FileReader(configFile);
       JsonElement config = new JsonParser().parse(reader);
-      max = config.getAsJsonObject().get("max").getAsInt();
       config_loaded_blocks = config.getAsJsonObject().get("loaded_blocks").getAsInt();
       for (JsonElement element : config.getAsJsonObject().get("compressible").getAsJsonArray()) {
-        COMPRESSION_ENTRIES.add(new CompressionEntry(new ResourceLocation(element.getAsJsonObject().get("registry_name").getAsString())
-                ,element.getAsJsonObject().get("texture").getAsString()));
-        String registryName = element.getAsJsonObject().get("registry_name").getAsString();
-        Compressed.registrynames.add(new ResourceLocation(registryName));
+        CompressionEntry entry = g.fromJson(element,CompressionEntry.class);
+        COMPRESSION_ENTRIES.add(entry);
       }
     } catch (Exception e) {
       Compressed.LOGGER.fatal(e);

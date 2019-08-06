@@ -29,7 +29,7 @@ credits="Thanks for this example mod goes to Java" #optional
 authors="Tfarecnim" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-Don't need one
+Compressed blocks and stuff
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.examplemod]] #optional

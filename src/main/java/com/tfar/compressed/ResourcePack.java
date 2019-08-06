@@ -13,14 +13,11 @@ import java.nio.file.Paths;
 
 public class ResourcePack {
   public static void makeResourcePack() {
-    String dir = "resourcepacks/compressed";
+    String dir = "resources/compressed";
     Path path = Paths.get(dir);
       try {
         Files.createDirectories(path);
-        dir += "/assets";
-        Path assets = Paths.get(dir);
-        Files.createDirectories(assets);
-        File mcmeta = new File("resourcepacks/compressed/pack.mcmeta");
+        File mcmeta = new File(dir+"/pack.mcmeta");
         if (!mcmeta.exists()) {
           String str = "{\n" +
                   "    \"pack\": {\n" +
@@ -33,7 +30,10 @@ public class ResourcePack {
           writer.write(str);
           writer.flush();
         }
-        dir += "/compressed";
+        //dir += "/assets";
+        Path assets = Paths.get(dir);
+        Files.createDirectories(assets);
+
         Path main = Paths.get(dir);
         Files.createDirectories(main);
         String blockstates = dir + "/blockstates";
@@ -75,8 +75,8 @@ public class ResourcePack {
           }
         }
         for (CompressionEntry entry : Configs.COMPRESSION_ENTRIES) {
-          String domain = entry.registry_name.getNamespace().equals("minecraft") ? "" : entry.registry_name.getNamespace() + ".";
-          File blockfile = new File(blocks + "/cube_all_" + domain + entry.registry_name.getPath() + ".json");
+          String domain = new ResourceLocation(entry.registry_name).getNamespace().equals("minecraft") ? "" : new ResourceLocation(entry.registry_name).getNamespace() + ".";
+          File blockfile = new File(blocks + "/cube_all_" + domain + new ResourceLocation(entry.registry_name).getPath() + ".json");
           if (!blockfile.exists()) {
 
             JsonObject blockmodel = new JsonObject();

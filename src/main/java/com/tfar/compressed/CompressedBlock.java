@@ -25,6 +25,7 @@ public class CompressedBlock extends Block {
 
   public final int compression_level;
   public final ResourceLocation material_name;
+  public Block base_block;
   public Block compression;
   public Block deCompression;
 

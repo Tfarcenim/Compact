@@ -1,17 +1,21 @@
 package com.tfar.compressed;
 
+import com.tfar.compressed.recipes.CompressionRecipe;
+import com.tfar.compressed.recipes.DeCompressionRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -40,7 +44,6 @@ public class Compressed {
 
   public static final String MODID = "compressed";
   public static final List<CompressedBlock> MOD_BLOCKS = new ArrayList<>();
-  public static final List<ResourceLocation> registrynames = new ArrayList<>();
   public static final Set<Block> compressible = new HashSet<>();
 
   public static final ItemGroup tab = new ItemGroup(MODID) {
@@ -54,6 +57,7 @@ public class Compressed {
   public static void registerSerials(RegistryEvent.Register<IRecipeSerializer<?>> event) {
 
     IForgeRegistry<IRecipeSerializer<?>> registry = event.getRegistry();
+
     SpecialRecipeSerializer<CompressionRecipe> compression = new SpecialRecipeSerializer<>(CompressionRecipe::new);
     compression.setRegistryName("compression");
     registry.register(compression);
@@ -61,6 +65,11 @@ public class Compressed {
     SpecialRecipeSerializer<DeCompressionRecipe> decompression = new SpecialRecipeSerializer<>(DeCompressionRecipe::new);
     decompression.setRegistryName("decompression");
     registry.register(decompression);
+
+    // CookingRecipeSerializer<CompressedSmeltingRecipe> smelting =
+    //         new CookingRecipeSerializer<>(CompressedSmeltingRecipe::new,200);
+    //  compression.setRegistryName("smelting");
+    //  registry.register(compression);
   }
 
   @SubscribeEvent
@@ -71,18 +80,12 @@ public class Compressed {
     IForgeRegistry<Block> registry = blockRegistryEvent.getRegistry();
     Block.Properties properties = Block.Properties.create(Material.ROCK, MaterialColor.DIRT).hardnessAndResistance(1.5F, 6.0F);
 
-    for (ResourceLocation material : registrynames){
-      Block block = ForgeRegistries.BLOCKS.getValue(material);
-      /*if (block.isAir(block.getDefaultState(),null,null)){
-        Compressed.LOGGER.fatal("No block found for "+material.toString());
-        continue;
-      }*/
-      compressible.add(block);
-      for (int i = 1; i < Configs.max + 1; i++) {
-        String domain = material.getNamespace().equals("minecraft") ? "" : material.getNamespace() + ".";
-        registerBlock(new CompressedBlock(properties, i, material), domain + material.getPath() + "_x" + i, registry);
+    for (CompressionEntry entry : Configs.COMPRESSION_ENTRIES) {
+      for (int i = 1; i < entry.max_compression + 1; i++) {
+        String domain = new ResourceLocation(entry.registry_name).getNamespace().equals("minecraft") ? "" : new ResourceLocation(entry.registry_name).getNamespace() + ".";
+        registerBlock(new CompressedBlock(properties, i, new ResourceLocation(entry.registry_name)), domain + new ResourceLocation(entry.registry_name).getPath() + "_x" + i, registry);
       }
-      }
+    }
   }
 
   @SubscribeEvent
@@ -114,7 +117,6 @@ public class Compressed {
   }
 
 
-
   private static void registerBlock(CompressedBlock block, String name, IForgeRegistry<Block> registry) {
     block.setRegistryName(name);
     registry.register(block);
@@ -129,19 +131,27 @@ public class Compressed {
   // this must be done after all block/item registry events are done or bad things may happen
   @SubscribeEvent
   public static void setup(FMLCommonSetupEvent e) {
-    for (ResourceLocation material : registrynames) {
-      Block block = ForgeRegistries.BLOCKS.getValue(material);
-      if (block.isAir(block.getDefaultState(),null,null)){
-        Compressed.LOGGER.fatal("No block found for " + material.toString());
+    for (CompressionEntry entry : Configs.COMPRESSION_ENTRIES) {
+      Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(entry.registry_name));
+
+      if (block == null || block.isAir(block.getDefaultState(), null, null)) {
+        Compressed.LOGGER.fatal("No block found for " + entry.registry_name);
         continue;
       }
       compressible.add(block);
-    }
-    for (CompressedBlock block : MOD_BLOCKS) {
-      setCompression(block);
-      setDeCompression(block);
+      for (int i = 1; i < entry.max_compression + 1; i++) {
+        String domain = new ResourceLocation(entry.registry_name).getNamespace().equals("minecraft") ? "" :
+                new ResourceLocation(entry.registry_name).getNamespace() + ".";
+        CompressedBlock compressedBlock = (CompressedBlock)ForgeRegistries.BLOCKS.getValue(
+                new ResourceLocation(MODID,domain + new ResourceLocation(entry.registry_name).getPath() + "_x" + i));
+
+        setCompression(compressedBlock,entry.max_compression);
+        setDeCompression(compressedBlock);
+       compressedBlock.base_block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(entry.registry_name));
+      }
     }
   }
+
 
   private static void setDeCompression(CompressedBlock c) {
     if (c.compression_level == 1)
@@ -154,8 +164,8 @@ public class Compressed {
     }
   }
 
-  private static void setCompression(CompressedBlock c) {
-    if (c.compression_level == Configs.max)
+  private static void setCompression(CompressedBlock c, int max_compression) {
+    if (c.compression_level == max_compression)
       c.setCompression(Blocks.AIR);
     else {
       String domain = c.material_name.getNamespace().equals("minecraft") ? "" : c.material_name.getNamespace() + ".";
@@ -170,6 +180,9 @@ public class Compressed {
 
   @ObjectHolder(MODID + ":decompression")
   public static final IRecipeSerializer<?> decompression = null;
+
+  @ObjectHolder(MODID + ":smelting")
+  public static final IRecipeSerializer<?> smelting = null;
 
 }
 

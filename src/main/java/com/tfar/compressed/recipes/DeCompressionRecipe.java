@@ -1,5 +1,7 @@
-package com.tfar.compressed;
+package com.tfar.compressed.recipes;
 
+import com.tfar.compressed.Compressed;
+import com.tfar.compressed.CompressedBlock;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.BlockItem;
@@ -57,6 +59,17 @@ public class DeCompressionRecipe extends SpecialRecipe {
     //don't need to search we already have it
     Block deCompress = Block.getBlockFromItem(toDecompress);
     return new ItemStack(((CompressedBlock)deCompress).deCompression,9);
+  }
+
+  /**
+   * Used to determine if this recipe can fit in a grid of the given width/height
+   *
+   * @param width
+   * @param height
+   */
+  @Override
+  public boolean canFit(int width, int height) {
+    return true;
   }
 
   @Nonnull
