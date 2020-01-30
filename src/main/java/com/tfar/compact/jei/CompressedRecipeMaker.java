@@ -1,7 +1,7 @@
-package com.tfar.compressed.jei;
+package com.tfar.compact.jei;
 
-import com.tfar.compressed.Compressed;
-import com.tfar.compressed.CompressedBlock;
+import com.tfar.compact.Compact;
+import com.tfar.compact.CompressedBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapelessRecipe;
@@ -15,12 +15,12 @@ public class CompressedRecipeMaker {
   public static List<ShapelessRecipe> createCompressions(){
     List<ShapelessRecipe> recipes = new ArrayList<>();
     String group = "compressed.compression";
-    for (CompressedBlock block : Compressed.MOD_BLOCKS){
+    for (CompressedBlock block : Compact.MOD_BLOCKS){
       ItemStack compressedResult = new ItemStack(block);
       ItemStack compressedInput = new ItemStack(block.deCompression);
       Ingredient compressedIngredient = Ingredient.fromStacks(compressedInput);
       NonNullList<Ingredient> inputs = NonNullList.withSize(9,compressedIngredient);
-      ResourceLocation id = new ResourceLocation(Compressed.MODID,compressedResult.getItem().getRegistryName().getPath());
+      ResourceLocation id = new ResourceLocation(Compact.MODID,compressedResult.getItem().getRegistryName().getPath());
       ShapelessRecipe recipe = new ShapelessRecipe(id, group, compressedResult, inputs);
       recipes.add(recipe);
     }
@@ -30,12 +30,12 @@ public class CompressedRecipeMaker {
   public static List<ShapelessRecipe> createDeCompressions(){
     List<ShapelessRecipe> recipes = new ArrayList<>();
     String group = "compressed.decompression";
-    for (CompressedBlock block : Compressed.MOD_BLOCKS){
+    for (CompressedBlock block : Compact.MOD_BLOCKS){
       ItemStack decompressedResult = new ItemStack(block.deCompression,9);
       ItemStack compressedInput = new ItemStack(block);
       Ingredient compressedIngredient = Ingredient.fromStacks(compressedInput);
       NonNullList<Ingredient> inputs = NonNullList.withSize(1,compressedIngredient);
-      ResourceLocation id = new ResourceLocation(Compressed.MODID,"de"+decompressedResult.getItem().getRegistryName().getPath());
+      ResourceLocation id = new ResourceLocation(Compact.MODID,"de"+decompressedResult.getItem().getRegistryName().getPath());
       ShapelessRecipe recipe = new ShapelessRecipe(id, group, decompressedResult, inputs);
       recipes.add(recipe);
     }

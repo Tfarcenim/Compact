@@ -1,5 +1,5 @@
 {
-  "type": "compressed:compression",
+  "type": "compact:compression",
   "group": "compression",
   "ingredients": [
     {
@@ -31,6 +31,6 @@
     }
   ],
   "result": {
-    "item": "compressed:cobblestone_x1"
+    "item": "compact:cobblestone_x1"
   }
 }

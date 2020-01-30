@@ -1,13 +1,16 @@
-package com.tfar.compressed.client;
+package com.tfar.compact.client;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.tfar.compressed.Compressed;
-import com.tfar.compressed.CompressedBlock;
-import com.tfar.compressed.ResourcePack;
+import com.tfar.compact.Compact;
+import com.tfar.compact.CompressedBlock;
+import com.tfar.compact.ResourcePack;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
@@ -30,7 +33,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 
-import static com.tfar.compressed.Configs.*;
+import static com.tfar.compact.Configs.*;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD,value = Dist.CLIENT)
 public class CompressedColor {
@@ -40,6 +43,7 @@ public class CompressedColor {
   @SubscribeEvent
   public static void setupResourcePack(FMLClientSetupEvent event) {
   //  if (config_loaded_blocks != -1)return;
+    for (Block block : Compact.MOD_BLOCKS) RenderTypeLookup.setRenderLayer(block, RenderType.func_228645_f_());
     handle();
     ResourcePack.makeResourcePack();
 
@@ -61,7 +65,7 @@ public class CompressedColor {
       }
     });
 
-    Minecraft.getInstance().getResourceManager().addResourcePack(resourcePack);
+    ((SimpleReloadableResourceManager)Minecraft.getInstance().getResourceManager()).addResourcePack(resourcePack);
 
     //ForgeHooksClient.refreshResources(Minecraft.getInstance(), VanillaResourceType.MODELS);
   }
@@ -74,7 +78,7 @@ public class CompressedColor {
       FileWriter writer = new FileWriter(configFile);
       JsonObject config = element.getAsJsonObject();
       config.remove("loaded_blocks");
-      config.addProperty("loaded_blocks", Compressed.MOD_BLOCKS.size());
+      config.addProperty("loaded_blocks", Compact.MOD_BLOCKS.size());
       writer.write(g.toJson(config,JsonObject.class));
       writer.flush();
     } catch (IOException ugh) {
@@ -87,7 +91,7 @@ public class CompressedColor {
   public static void registerBlockColors(ColorHandlerEvent.Block event) {
     BlockColors colors = event.getBlockColors();
     final IBlockColor compressedColor = (state, blockAccess, pos, tintIndex) -> Math.max(0,0xffffff - 0x080808 * ((CompressedBlock) state.getBlock()).compression_level + (tintIndex == 0 ?  0 : 4));
-    for (CompressedBlock block : Compressed.MOD_BLOCKS)
+    for (CompressedBlock block : Compact.MOD_BLOCKS)
       colors.register(compressedColor, block);
   }
 
@@ -100,9 +104,9 @@ public class CompressedColor {
 
     final IItemColor itemBlockColor = (stack, tintIndex) -> {
       final BlockState state = ((BlockItem) stack.getItem()).getBlock().getDefaultState();
-      return blockColors.getColor(state, null, null,tintIndex);
+      return blockColors.func_228054_a_(state, null, null,tintIndex);
     };
-    for (CompressedBlock block : Compressed.MOD_BLOCKS)
+    for (CompressedBlock block : Compact.MOD_BLOCKS)
       itemColors.register(itemBlockColor, block);
   }
 }

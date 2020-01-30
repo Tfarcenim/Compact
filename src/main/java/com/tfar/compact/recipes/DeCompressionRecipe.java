@@ -1,21 +1,17 @@
-package com.tfar.compressed.recipes;
+package com.tfar.compact.recipes;
 
-import com.tfar.compressed.Compressed;
-import com.tfar.compressed.CompressedBlock;
+import com.tfar.compact.Compact;
+import com.tfar.compact.CompressedBlock;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DeCompressionRecipe extends SpecialRecipe {
   public DeCompressionRecipe(ResourceLocation idIn) {
@@ -75,7 +71,7 @@ public class DeCompressionRecipe extends SpecialRecipe {
   @Nonnull
   @Override
   public IRecipeSerializer<?> getSerializer() {
-    return Compressed.decompression;
+    return Compact.decompression;
   }
 }
 

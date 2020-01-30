@@ -1,10 +1,9 @@
-package com.tfar.compressed;
+package com.tfar.compact;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -19,8 +18,8 @@ public class Configs {
 
   public static final Set<CompressionEntry> COMPRESSION_ENTRIES = new HashSet<>();
 
-  public static final File configFile = new File("config/compressed.json");
-  private static BufferedInputStream in = new BufferedInputStream(Configs.class.getResourceAsStream("/compressed.json"));
+  public static final File configFile = new File("config/compact.json");
+  private static BufferedInputStream in = new BufferedInputStream(Configs.class.getResourceAsStream("/compact.json"));
 
   public static String s;
 
@@ -61,7 +60,7 @@ public class Configs {
         COMPRESSION_ENTRIES.add(entry);
       }
     } catch (Exception e) {
-      Compressed.LOGGER.fatal(e);
+      Compact.LOGGER.fatal(e);
     }
   }
 }

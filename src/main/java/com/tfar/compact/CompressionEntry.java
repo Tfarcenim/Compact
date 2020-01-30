@@ -1,4 +1,4 @@
-package com.tfar.compressed;
+package com.tfar.compact;
 
 public class CompressionEntry {
   public final String registry_name;

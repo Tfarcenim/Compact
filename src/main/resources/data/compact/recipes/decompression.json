@@ -1,9 +1,9 @@
 {
-  "type": "compressed:decompression",
+  "type": "compact:decompression",
   "group": "compression",
   "ingredients": [
     {
-      "item": "compressed:cobblestone_x1"
+      "item": "compact:cobblestone_x1"
     }
   ],
   "result": {

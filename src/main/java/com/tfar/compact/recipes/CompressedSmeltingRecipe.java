@@ -1,7 +1,7 @@
-package com.tfar.compressed.recipes;
+package com.tfar.compact.recipes;
 
-import com.tfar.compressed.Compressed;
-import com.tfar.compressed.CompressedBlock;
+import com.tfar.compact.Compact;
+import com.tfar.compact.CompressedBlock;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
@@ -31,7 +31,7 @@ public class CompressedSmeltingRecipe extends AbstractCookingRecipe {
         Block blockBase = compressedBlock.base_block;
         if (world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(new ItemStack(
                 blockBase)), world).isPresent()
-                && Compressed.compressible.contains(Block.getBlockFromItem(world.getRecipeManager()
+                && Compact.compressible.contains(Block.getBlockFromItem(world.getRecipeManager()
                 .getRecipe(IRecipeType.SMELTING, new Inventory(new ItemStack(blockBase)),
                 world).get().getRecipeOutput().getItem()))) {
           return true;
@@ -48,6 +48,6 @@ public class CompressedSmeltingRecipe extends AbstractCookingRecipe {
   @Nonnull
   @Override
   public IRecipeSerializer<?> getSerializer() {
-    return Compressed.smelting;
+    return Compact.smelting;
   }
 }

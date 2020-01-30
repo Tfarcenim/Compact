@@ -1,6 +1,7 @@
-package com.tfar.compressed;
+package com.tfar.compact;
 
 import com.google.gson.JsonObject;
+import com.tfar.compact.client.CompressedResourcePack;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.File;
@@ -13,7 +14,7 @@ import java.nio.file.Paths;
 
 public class ResourcePack {
   public static void makeResourcePack() {
-    String dir = "resources/compressed";
+    String dir = CompressedResourcePack.loc+"/compact";
     Path path = Paths.get(dir);
       try {
         Files.createDirectories(path);
@@ -21,7 +22,7 @@ public class ResourcePack {
         if (!mcmeta.exists()) {
           String str = "{\n" +
                   "    \"pack\": {\n" +
-                  "        \"description\": \"Assets for Compressed mod, DO NOT REMOVE!\",\n" +
+                  "        \"description\": \"Assets for Compact mod, DO NOT REMOVE!\",\n" +
                   "        \"pack_format\": 4,\n" +
                   "        \"_comment\": \"A pack_format of 4 requires json lang files. Note: we require v4 pack meta for all mods.\"\n" +
                   "    }\n" +
@@ -46,11 +47,11 @@ public class ResourcePack {
         Path main3 = Paths.get(items);
         Files.createDirectories(main3);
 
-        for (CompressedBlock block : Compressed.MOD_BLOCKS) {
+        for (CompressedBlock block : Compact.MOD_BLOCKS) {
           String domain = block.material_name.getNamespace().equals("minecraft") ? "" : block.material_name.getNamespace() + ".";
           File blockstatefile = new File(blockstates + "/" + domain + block.material_name.getPath() + "_x" + block.compression_level + ".json");
           if (!blockstatefile.exists()) {
-            String model = "compressed:block/cube_all_" + domain + block.material_name.getPath();
+            String model = "compact:block/cube_all_" + domain + block.material_name.getPath();
             JsonObject obj = new JsonObject();
             obj.addProperty("model", model);
             JsonObject variants = new JsonObject();
@@ -67,7 +68,7 @@ public class ResourcePack {
           File itemfile = new File(items + "/" + domain +block.material_name.getPath() + "_x" + block.compression_level + ".json");
           if (!itemfile.exists()) {
             JsonObject itemmodel = new JsonObject();
-            itemmodel.addProperty("parent", "compressed:block/cube_all_" + domain + block.material_name.getPath());
+            itemmodel.addProperty("parent", "compact:block/cube_all_" + domain + block.material_name.getPath());
 
             FileWriter writer = new FileWriter(itemfile);
             writer.write(Configs.g.toJson(itemmodel));
@@ -80,7 +81,7 @@ public class ResourcePack {
           if (!blockfile.exists()) {
 
             JsonObject blockmodel = new JsonObject();
-            blockmodel.addProperty("parent", "compressed:block/cube_all_tinted");
+            blockmodel.addProperty("parent", "compact:block/cube_all_tinted");
             JsonObject textures = new JsonObject();
             textures.addProperty("all",entry.texture);
             blockmodel.add("textures", textures);

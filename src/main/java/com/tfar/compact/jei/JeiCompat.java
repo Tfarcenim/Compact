@@ -1,6 +1,6 @@
-package com.tfar.compressed.jei;
+package com.tfar.compact.jei;
 
-import com.tfar.compressed.Compressed;
+import com.tfar.compact.Compact;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
@@ -11,7 +11,7 @@ import net.minecraft.util.ResourceLocation;
 public class JeiCompat implements IModPlugin {
   @Override
   public ResourceLocation getPluginUid() {
-    return new ResourceLocation(Compressed.MODID,Compressed.MODID);
+    return new ResourceLocation(Compact.MODID, Compact.MODID);
   }
 
   @Override

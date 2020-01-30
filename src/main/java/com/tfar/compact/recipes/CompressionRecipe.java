@@ -1,7 +1,7 @@
-package com.tfar.compressed.recipes;
+package com.tfar.compact.recipes;
 
-import com.tfar.compressed.Compressed;
-import com.tfar.compressed.CompressedBlock;
+import com.tfar.compact.Compact;
+import com.tfar.compact.CompressedBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.inventory.CraftingInventory;
@@ -24,7 +24,7 @@ public class CompressionRecipe extends SpecialRecipe {
 
     //search for compression recipes
     final ItemStack cachedStack = inv.getStackInSlot(0);
-    if (inv.getSizeInventory() != 9 || (!Compressed.compressible.contains(Block.getBlockFromItem(cachedStack.getItem()))
+    if (inv.getSizeInventory() != 9 || (!Compact.compressible.contains(Block.getBlockFromItem(cachedStack.getItem()))
 
             && !(Block.getBlockFromItem(cachedStack.getItem()) instanceof CompressedBlock))
     ) return false;
@@ -36,7 +36,7 @@ public class CompressionRecipe extends SpecialRecipe {
         }
       }
     }
-    return Compressed.compressible.contains(Block.getBlockFromItem(cachedStack.getItem()))
+    return Compact.compressible.contains(Block.getBlockFromItem(cachedStack.getItem()))
             || ((CompressedBlock) Block.getBlockFromItem(cachedStack.getItem())).compression != Blocks.AIR;
   }
 
@@ -58,14 +58,14 @@ public class CompressionRecipe extends SpecialRecipe {
       String path = block.getRegistryName().getPath();
       String domain = block.getRegistryName().getNamespace().equals("minecraft") ? "" : block.getRegistryName().getNamespace() + ".";
       return new ItemStack(ForgeRegistries.BLOCKS.getValue(
-              new ResourceLocation(Compressed.MODID,domain + path + "_x" + 1)));
+              new ResourceLocation(Compact.MODID,domain + path + "_x" + 1)));
     }
   }
 
   @Nonnull
   @Override
   public IRecipeSerializer<?> getSerializer() {
-    return Compressed.compression;
+    return Compact.compression;
   }
 
   @Override

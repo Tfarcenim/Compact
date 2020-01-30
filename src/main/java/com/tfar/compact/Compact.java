@@ -1,7 +1,7 @@
-package com.tfar.compressed;
+package com.tfar.compact;
 
-import com.tfar.compressed.recipes.CompressionRecipe;
-import com.tfar.compressed.recipes.DeCompressionRecipe;
+import com.tfar.compact.recipes.CompressionRecipe;
+import com.tfar.compact.recipes.DeCompressionRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -32,17 +32,17 @@ import java.util.List;
 import java.util.Set;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-@Mod(value = Compressed.MODID)
-public class Compressed {
+@Mod(value = Compact.MODID)
+public class Compact {
 
-  public Compressed() {
+  public Compact() {
     ResourcePack.makeResourcePack();
   }
 
   // Directly reference a log4j logger.
   public static final Logger LOGGER = LogManager.getLogger();
 
-  public static final String MODID = "compressed";
+  public static final String MODID = "compact";
   public static final List<CompressedBlock> MOD_BLOCKS = new ArrayList<>();
   public static final Set<Block> compressible = new HashSet<>();
 
@@ -135,7 +135,7 @@ public class Compressed {
       Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(entry.registry_name));
 
       if (block == null || block.isAir(block.getDefaultState(), null, null)) {
-        Compressed.LOGGER.fatal("No block found for " + entry.registry_name);
+        Compact.LOGGER.fatal("No block found for " + entry.registry_name);
         continue;
       }
       compressible.add(block);
@@ -159,7 +159,7 @@ public class Compressed {
     else {
       String domain = c.material_name.getNamespace().equals("minecraft") ? "" : c.material_name.getNamespace() + ".";
       c.setDeCompression(ForgeRegistries.BLOCKS.getValue(
-              new ResourceLocation(Compressed.MODID,
+              new ResourceLocation(Compact.MODID,
                       domain + c.material_name.getPath() + "_x" + (c.compression_level - 1))));
     }
   }
@@ -170,7 +170,7 @@ public class Compressed {
     else {
       String domain = c.material_name.getNamespace().equals("minecraft") ? "" : c.material_name.getNamespace() + ".";
       c.setCompression(ForgeRegistries.BLOCKS.getValue(
-              new ResourceLocation(Compressed.MODID,
+              new ResourceLocation(Compact.MODID,
                       domain + c.material_name.getPath() + "_x" + (c.compression_level + 1))));
     }
   }

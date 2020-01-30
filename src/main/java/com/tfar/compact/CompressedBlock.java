@@ -1,11 +1,10 @@
-package com.tfar.compressed;
+package com.tfar.compact;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -41,12 +40,6 @@ public class CompressedBlock extends Block {
 
   public void setDeCompression(Block deCompression) {
     this.deCompression = deCompression;
-  }
-
-  @Override
-  @Nonnull
-  public BlockRenderLayer getRenderLayer() {
-    return BlockRenderLayer.TRANSLUCENT;
   }
 
   @Override
