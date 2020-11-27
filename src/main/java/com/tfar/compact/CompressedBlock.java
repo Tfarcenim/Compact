@@ -1,7 +1,6 @@
 package com.tfar.compact;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
@@ -9,29 +8,28 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.storage.loot.LootContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class CompressedBlock extends Block {
 
   public final int compression_level;
   public final ResourceLocation material_name;
+  public final ResourceLocation texture;
   public Block base_block;
   public Block compression;
   public Block deCompression;
 
-  public CompressedBlock(Properties properties, int compression_level, ResourceLocation material_name) {
+  public CompressedBlock(Properties properties, int compression_level, ResourceLocation material_name,ResourceLocation texture) {
     super(properties);
     this.compression_level = compression_level;
     this.material_name = material_name;
+    this.texture = texture;
   }
 
   public void setCompression(Block compression) {
@@ -60,11 +58,5 @@ public class CompressedBlock extends Block {
     BigInteger value = BigInteger.valueOf(1);
     for (int i = 0; i < this.compression_level; i++) value = value.multiply(BigInteger.valueOf(9));
     return value;
-  }
-
-  @Nonnull
-  @Override
-  public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
-    return new ArrayList<>(Collections.singletonList(new ItemStack(this)));
   }
 }

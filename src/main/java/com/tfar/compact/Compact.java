@@ -2,22 +2,31 @@ package com.tfar.compact;
 
 import com.tfar.compact.recipes.CompressionRecipe;
 import com.tfar.compact.recipes.DeCompressionRecipe;
+import net.devtech.arrp.api.ARRPEvent;
+import net.devtech.arrp.api.RuntimeResourcePack;
+import net.devtech.arrp.json.blockstate.JState;
+import net.devtech.arrp.json.loot.JLootTable;
+import net.devtech.arrp.json.models.JModel;
+import net.devtech.arrp.json.models.JTextures;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraft.resources.SimpleReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -31,18 +40,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static net.minecraftforge.common.MinecraftForge.EVENT_BUS;
+
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 @Mod(value = Compact.MODID)
 public class Compact {
 
   public Compact() {
-    ResourcePack.makeResourcePack();
+    EVENT_BUS.addListener(this::registerPack);
+  }
+
+  public static final String MODID = "compact";
+  public static final RuntimeResourcePack RESOURCE_PACK = RuntimeResourcePack.create(MODID+":builtin");
+
+  private void registerPack(ARRPEvent e) {
+    e.addPack(RESOURCE_PACK);
   }
 
   // Directly reference a log4j logger.
   public static final Logger LOGGER = LogManager.getLogger();
 
-  public static final String MODID = "compact";
   public static final List<CompressedBlock> MOD_BLOCKS = new ArrayList<>();
   public static final Set<Block> compressible = new HashSet<>();
 
@@ -83,7 +100,7 @@ public class Compact {
     for (CompressionEntry entry : Configs.COMPRESSION_ENTRIES) {
       for (int i = 1; i < entry.max_compression + 1; i++) {
         String domain = new ResourceLocation(entry.registry_name).getNamespace().equals("minecraft") ? "" : new ResourceLocation(entry.registry_name).getNamespace() + ".";
-        registerBlock(new CompressedBlock(properties, i, new ResourceLocation(entry.registry_name)), domain + new ResourceLocation(entry.registry_name).getPath() + "_x" + i, registry);
+        registerBlock(new CompressedBlock(properties, i, new ResourceLocation(entry.registry_name),new ResourceLocation(entry.texture)), domain + new ResourceLocation(entry.registry_name).getPath() + "_x" + i, registry);
       }
     }
   }
@@ -102,7 +119,7 @@ public class Compact {
         public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
           return new TranslationTextComponent(getTranslationKey(),
                   ((CompressedBlock) ((BlockItem) stack.getItem()).getBlock()).compression_level)
-                  .appendSibling(
+                  .append(
                           new TranslationTextComponent("block." +
                                   ((CompressedBlock) ((BlockItem) stack.getItem())
                                           .getBlock()).material_name.getNamespace() + "." +
@@ -134,10 +151,11 @@ public class Compact {
     for (CompressionEntry entry : Configs.COMPRESSION_ENTRIES) {
       Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(entry.registry_name));
 
-      if (block == null || block.isAir(block.getDefaultState(), null, null)) {
+      if (block == null || block.getDefaultState().isAir()) {
         Compact.LOGGER.fatal("No block found for " + entry.registry_name);
         continue;
       }
+
       compressible.add(block);
       for (int i = 1; i < entry.max_compression + 1; i++) {
         String domain = new ResourceLocation(entry.registry_name).getNamespace().equals("minecraft") ? "" :
@@ -150,8 +168,33 @@ public class Compact {
        compressedBlock.base_block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(entry.registry_name));
       }
     }
+
+    for (CompressedBlock block : MOD_BLOCKS) {
+      RESOURCE_PACK.addLootTable(blockLootTable(block), JLootTable.loot("minecraft:block")
+              .pool(JLootTable.pool()
+                      .rolls(1)
+                      .entry(JLootTable.entry()
+                              .type("minecraft:item")
+                              .name(block.getRegistryName().toString()))
+                      .condition(JLootTable.condition("minecraft:survives_explosion"))));
+    }
   }
 
+  @SubscribeEvent
+  public static void clientSetup(FMLClientSetupEvent e) {
+    for (CompressedBlock block : MOD_BLOCKS) {
+      String s = "compact:block/cube_all_tinted";
+      RESOURCE_PACK.addBlockState(JState.state(JState.variant(JState.model(s))), block.getRegistryName());
+      RESOURCE_PACK.addModel(JModel.model().parent(s).textures(new JTextures().var("all",block.texture.toString())), new ResourceLocation(MODID,
+              "item/" + block.getRegistryName().getPath()));
+    }
+    ((SimpleReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addResourcePack(Compact.RESOURCE_PACK);
+  }
+
+  public static ResourceLocation blockLootTable(Block block) {
+    ResourceLocation identifier = block.getRegistryName();
+    return new ResourceLocation(identifier.getNamespace(),"blocks/"+ identifier.getPath());
+  }
 
   private static void setDeCompression(CompressedBlock c) {
     if (c.compression_level == 1)
